@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment 2</title>
+</head>
+<body>
+<div style="text-align: center">
+    <h1>Yaswanth Janardhan Konduru</h1>
+    <h3>1001741845</h3>
+</div>
+<div>
+    <form action="{{url_for('index')}}" enctype=multipart/form-data method="POST" style="width:30%;">
+        <fieldset>
+            <legend>CSV Upload</legend>
+            <label for="csvupload">Select the CSV file to upload</label>
+            <input type="file" id="csvupload" name="csvupload"><br><br>
+            <input type="submit" value="Upload">
+        </fieldset>
+    </form>
+</div>
+</body>
+</html>

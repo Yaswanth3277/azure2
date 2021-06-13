@@ -1,28 +1,19 @@
-from flask import Flask, request
-from flask import render_template
 import textwrap
+
+from flask import Flask, render_template, request
+from werkzeug.utils import secure_filename
+import pandas as pd
 import pyodbc
-from datetime import datetime, timedelta
-from azure.storage.blob import generate_container_sas, ContainerSasPermissions
+import numpy as np
 
 app = Flask(__name__)
 
-
-account_name = "advanceddatabasesystems"
-account_key = "R1BmHYfoF6UU244ga8KFYOrID42/GS7FZb4FCKd2Pl5yzvnMYIRqhmCPj/JTwzkft6D5GsuFDVcY7bU7V3VIDQ=="
-container_name = "adbassignment1"
-
 driver = '{ODBC Driver 17 for SQL Server}'
-
 server_name = 'anonymous'
 database_name = 'csvdatabase'
-
-
-server = '{server_name}.database.windows.net,1433'.format(server_name=server_name)
-
 username = "anonymous"
 password = "Yash@3277"
-
+server = '{server_name}.database.windows.net,1433'.format(server_name=server_name)
 connection_string = textwrap.dedent('''
     Driver={driver};
     Server={server};
@@ -39,141 +30,37 @@ connection_string = textwrap.dedent('''
     username=username,
     password=password
 ))
+conn = pyodbc.connect(connection_string)
+cursor = conn.cursor()
 
 
-def get_img_url_with_container_sas_token(blob_name):
-    container_sas_token = generate_container_sas(
-        account_name=account_name,
-        container_name=container_name,
-        account_key=account_key,
-        permission=ContainerSasPermissions(read=True),
-        expiry=datetime.utcnow() + timedelta(hours=1)
-    )
-    blob_url_with_container_sas_token = f"https://{account_name}.blob.core.windows.net/{container_name}/{blob_name}?{container_sas_token}"
-    return blob_url_with_container_sas_token
-
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        f = request.files['csvupload']
+        f.save(secure_filename(f.filename))
+        df = pd.read_csv(f.filename)
+        print(df)
+        columns = df.columns
+        print(df['magError'])
+        df['mag'] = df['mag'].fillna(0.0)
+        df['magType'] = df['magType'].fillna("NA")
+        df['nst'] = df['nst'].fillna(0)
+        df['gap'] = df['gap'].fillna(0.0)
+        df['dmin'] = df['dmin'].fillna(0.0)
+        df['horizontalError'] = df['horizontalError'].fillna(0.0)
+        df['magError'] = df['magError'].fillna(0.0)
+        df['magNst'] = df['magNst'].fillna(0.0)
+        print(columns[0], columns[21])
+        cursor.execute('CREATE TABLE earthquake_data(Time nvarchar(50), Latitude float, Longitude float, Depth float, Mag float NULL DEFAULT 0.0, Magtype nvarchar(50) NULL DEFAULT 0.0, Nst int NULL DEFAULT 0.0, Gap float NULL DEFAULT 0.0, Dmin  float NULL DEFAULT 0.0, Rms float, Net nvarchar(50), ID nvarchar(50), Updated nvarchar(50), Place nvarchar(MAX), Type nvarchar(50), HorizontalError float NULL DEFAULT 0.0, DepthError float, MagError float NULL DEFAULT 0.0, MagNst int NULL DEFAULT 0.0, Status nvarchar(50), LocationSource nvarchar(50), MagSource nvarchar(50))')
+
+        for row in df.itertuples():
+            print(row)
+            cursor.execute("INSERT INTO csvdatabase.dbo.earthquake_data VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", row.time, row.latitude, row.longitude, row.depth, row.mag, row.magType, row.nst, row.gap, row.dmin, row.rms, row.net, row.id, row.updated, row.place, row.type, row.horizontalError, row.depthError, row.magError, row.magNst, row.status, row.locationSource, row.magSource)
+
+        conn.commit()
+        return 'file uploaded successfully'
     return render_template("index.html")
-
-
-@app.route('/disppic')
-def disp_pic():
-    img_names = []
-    img_names_sorted = []
-    img_sorted_links = []
-    cnxx: pyodbc.Connection = pyodbc.connect(connection_string)
-    crsr: pyodbc.Cursor = cnxx.cursor()
-    select_sql = "select Picture from people where salary < 99000"
-    crsr.execute(select_sql)
-    for row in crsr:
-        for data in row:
-            img_names.append(data)
-    cnxx.close()
-    for names in img_names:
-        if names != None:
-            img_names_sorted.append(names)
-    for values in img_names_sorted:
-        img_sorted_links.append(get_img_url_with_container_sas_token(values))
-    return render_template("disppic.html", sas_tokens = img_sorted_links)
-
-@app.route('/upload')
-def upload_file():
-    return render_template("uploadfile.html")
-
-@app.route('/displaypic', methods =["GET", "POST"])
-def display_pic():
-    img_names = []
-    img_names_sorted = []
-    img_sorted_links = []
-    if request.method == "POST":
-        name = request.form.get("names")
-    print(name)
-    cnxx: pyodbc.Connection = pyodbc.connect(connection_string)
-    crsr: pyodbc.Cursor = cnxx.cursor()
-    #select_sql = "select Picture from people where Name=?"
-    crsr.execute("select Picture from people where Name=?", name)
-    for data in crsr:
-        for value in data:
-            image_name = value
-
-    img_name = get_img_url_with_container_sas_token(image_name)
-    print(img_name)
-    return render_template("displaypic.html", img_name = img_name)
-
-
-@app.route('/deletepeople', methods =["GET", "POST"])
-def delete_people():
-    people = []
-    if request.method == "POST":
-        name = request.form.get("deleteperson")
-    print(name)
-    cnxx: pyodbc.Connection = pyodbc.connect(connection_string)
-    crsr: pyodbc.Cursor = cnxx.cursor()
-    #select_sql = "select Picture from people where Name=?"
-    crsr.execute("delete from people where Name=?", name)
-    cnxx.commit()
-    cnxx.close()
-    conn: pyodbc.Connection = pyodbc.connect(connection_string)
-    cur: pyodbc.Cursor = conn.cursor()
-    # select_sql = "select * from people where Name=?"
-    cur.execute("select * from people")
-    for data in cur:
-        for values in data:
-            people.append(values)
-    print(people)
-    conn.close()
-    return render_template("deletefile.html", people = people)
-
-
-@app.route('/keyupdate', methods =["GET", "POST"])
-def key_update():
-    row_values = []
-    if request.method == "POST":
-        keyword = request.form.get("keywordchange")
-    print(keyword)
-    cnxx: pyodbc.Connection = pyodbc.connect(connection_string)
-    crsr: pyodbc.Cursor = cnxx.cursor()
-    # select_sql = "update people set Keywords=? where Name='Dhruvi'"
-    crsr.execute("update people set Keywords=? where Name='Dhruvi'", keyword)
-    cnxx.commit()
-    cnxx.close()
-    conn: pyodbc.Connection = pyodbc.connect(connection_string)
-    cur: pyodbc.Cursor = conn.cursor()
-    select_sql = "select * from people where Name='Dhruvi'"
-    cur.execute(select_sql)
-    for data in cur:
-        for values in data:
-            row_values.append(values)
-    print(row_values)
-    conn.close()
-    return render_template("keyupdate.html", row_values = row_values)
-
-
-@app.route('/salaryupdate', methods =["GET", "POST"])
-def salary_update():
-    salary = []
-    if request.method == "POST":
-        Name = request.form.get("salaryname")
-        new_salary = request.form.get("salary")
-        print(Name)
-        print(new_salary)
-    cnxx: pyodbc.Connection = pyodbc.connect(connection_string)
-    crsr: pyodbc.Cursor = cnxx.cursor()
-    # select_sql = "update people set Keywords=? where Name='Dhruvi'"
-    crsr.execute("update people set Salary=? where Name=?", new_salary, Name)
-    cnxx.commit()
-    cnxx.close()
-    conn: pyodbc.Connection = pyodbc.connect(connection_string)
-    cur: pyodbc.Cursor = conn.cursor()
-    # select_sql = "select * from people where Name=?"
-    cur.execute("select * from people where Name=?", Name)
-    for data in cur:
-        for values in data:
-            salary.append(values)
-    print(salary)
-    conn.close()
-    return render_template("salaryupdate.html", salary=salary)
 
 
 if __name__ == '__main__':
