@@ -17,6 +17,28 @@
             <input type="submit" value="Upload">
         </fieldset>
     </form>
+    <form action="{{url_for('eq_count')}}" enctype=multipart/form-data method="POST" style="width:30%;">
+        <fieldset>
+            <legend>Search Earthquakes</legend>
+            <label for="count">Search for earthquakes with magnitude greater than</label>
+            <input type="text" id="count" name="count"><br><br>
+            <a href="/eqcount"><input type="submit" value="Find"></a>
+        </fieldset>
+    </form>
+    <form action="{{url_for('range_count')}}" enctype=multipart/form-data method="POST" style="width:30%;">
+        <fieldset>
+            <legend>Search Earthquakes with range</legend>
+            <label>Search for earthquakes with magnitude range and time</label><br><br>
+            <label for="count">Start range</label>
+            <input type="text" id="startrange" name="startrange">
+            <label for="count">End range</label>
+            <input type="text" id="stoprange" name="stoprange"><br><br>
+            <label for="timerange">Select the time range</label>
+            <input type="radio" name="timerange" id="timerange" value="Recent Week">Recent Week
+            <input type="radio" name="timerange" value="Month">Month<br><br>
+            <a href="/rangecount"><input type="submit" value="Find"></a>
+        </fieldset>
+    </form>
 </div>
 </body>
 </html>

@@ -63,5 +63,36 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/eqcount', methods=['GET', 'POST'])
+def eq_count():
+    earthquakes = []
+    if request.method == 'POST':
+        magnitude = request.form.get('count')
+    cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag > ?", magnitude)
+    for data in cursor:
+        earthquakes.append(data)
+    earthquake_len = len(earthquakes)
+    return render_template('eq_count.html', earthquakes = earthquakes, length = earthquake_len)
+
+
+@app.route('/rangecount', methods=['GET', 'POST'])
+def range_count():
+    earthquakes = []
+    if request.method == 'POST':
+        startmag = request.form.get('startrange')
+        stopmag = request.form.get('stoprange')
+        timing = request.form.get('timerange')
+        print(startmag, stopmag, timing)
+
+        if timing == "Recent Week":
+            pass
+        else:
+            cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag > ? and Mag < ?", startmag, stopmag)
+            for data in cursor:
+                earthquakes.append(data)
+    return render_template('range_count.html', earthquakes = earthquakes)
+
+
+
 if __name__ == '__main__':
     app.run()

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment 2</title>
+</head>
+<body>
+<div style="text-align: center">
+    <h1>Yaswanth Janardhan Konduru</h1>
+    <h3>1001741845</h3>
+</div>
+<div>
+    <table style="border:1px solid black">
+        <tr style="border:1px solid black">
+            <th style="border:1px solid black">Time</th>
+            <th style="border:1px solid black">Latitude</th>
+            <th style="border:1px solid black">Longitude</th>
+            <th style="border:1px solid black">Depth</th>
+            <th style="border:1px solid black">Mag</th>
+            <th style="border:1px solid black">Magtype</th>
+            <th style="border:1px solid black">Place</th>
+            <th style="border:1px solid black">LocationSource</th>
+        </tr>
+        {% for values in earthquakes %}
+        <tr style="border:1px solid black">
+            {% for data in values %}
+            <td style="border:1px solid black">{{data}}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
