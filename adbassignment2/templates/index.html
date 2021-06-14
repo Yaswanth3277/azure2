@@ -50,6 +50,14 @@
             <a href="/earthquakeclusters"><input type="submit" value="Find"></a>
         </fieldset>
     </form>
+    <form action="{{url_for('night_quake')}}" enctype=multipart/form-data method="POST" style="width:30%;">
+        <fieldset>
+            <legend>Search Earthquakes</legend>
+            <label for="night">Enter the mag values to search for earthquakes during night</label>
+            <input type="text" id="night" name="night"><br><br>
+            <a href="/nightquake"><input type="submit" value="Find"></a>
+        </fieldset>
+    </form>
 </div>
 </body>
 </html>

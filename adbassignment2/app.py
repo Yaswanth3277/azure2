@@ -223,7 +223,16 @@ def earthquake_clusters():
         return render_template('magtype_cluster.html', earthquakes1 = earthquakes1, length1= earthquake_len1, earthquakes2 = earthquakes2, length2= earthquake_len2, earthquakes3 = earthquakes3, length3= earthquake_len3, earthquakes4 = earthquakes4, length4= earthquake_len4, earthquakes5 = earthquakes5, length5= earthquake_len5, earthquakes6 = earthquakes6, length6= earthquake_len6, earthquakes7 = earthquakes7, length7= earthquake_len7, earthquakes8 = earthquakes8, length8= earthquake_len8, earthquakes9 = earthquakes9, length9= earthquake_len9, earthquakes10 = earthquakes10, length10= earthquake_len10)
 
 
-@app.route('/')
+@app.route('/nightquake', methods=['GET', 'POST'])
+def night_quake():
+    earthquakes = []
+    if request.method == 'POST':
+        magnitude = request.form.get('night')
+    cursor.execute("select  time,mag from earthquake_data where (cast(time as time) not between '08:00:00' and '18:00:00') and mag > ?", magnitude)
+    for data in cursor:
+        earthquakes.append(data)
+    earthquake_len = len(earthquakes)
+    return render_template('night_quake.html', earthquakes = earthquakes, length = earthquake_len)
 
 
 if __name__ == '__main__':
