@@ -97,6 +97,30 @@ def range_count():
     return render_template('range_count.html', earthquakes = earthquakes, length = earthquake_len)
 
 
+@app.route('/eqlocation', methods=['GET', 'POST'])
+def eq_location():
+    eq_area = []
+    cursor.execute("SELECT Area = right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1) From earthquake_data")
+    for data in cursor:
+        for value in data:
+            eq_area.append(value)
+    eq_area_list = list(set(eq_area))
+    return render_template('eq_location.html', drop_down = eq_area_list)
+
+
+@app.route('/eqoutput', methods=['GET', 'POST'])
+def eq_output():
+    earthquakes = []
+    if request.method == 'POST':
+        distance = request.form.get('dist')
+        area = request.form.get('areas')
+    cursor.execute("SELECT id ,latitude, longitude, place, Area = right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1) From earthquake_data where right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1)= ? AND SUBSTRING (place,0,PATINDEX('%km%',place)) >=?", area, distance)
+    for data in cursor:
+        earthquakes.append(data)
+    earthquake_len = len(earthquakes)
+    return render_template('eq_location.html', earthquakes = earthquakes, length = earthquake_len)
+
+
 @app.route('/earthquakeclusters', methods=['GET', 'POST'])
 def earthquake_clusters():
     earthquakes1 = []

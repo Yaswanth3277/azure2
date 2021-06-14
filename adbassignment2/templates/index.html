@@ -58,6 +58,13 @@
             <a href="/nightquake"><input type="submit" value="Find"></a>
         </fieldset>
     </form>
+    <form action="{{url_for('eq_location')}}" enctype=multipart/form-data method="POST" style="width:30%;">
+        <fieldset>
+            <legend>Earthquake based on location</legend>
+            <label>Find earthquakes that were near (20 km, 50 km?) of a specified location.</label>
+            <a href="/eqlocation"><input type="submit" value="Find"></a>
+        </fieldset>
+    </form>
 </div>
 </body>
 </html>
