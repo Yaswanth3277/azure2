@@ -111,6 +111,7 @@ def eq_location():
 @app.route('/eqoutput', methods=['GET', 'POST'])
 def eq_output():
     earthquakes = []
+    eq_area = []
     if request.method == 'POST':
         distance = request.form.get('dist')
         area = request.form.get('areas')
@@ -118,7 +119,12 @@ def eq_output():
     for data in cursor:
         earthquakes.append(data)
     earthquake_len = len(earthquakes)
-    return render_template('eq_location.html', earthquakes = earthquakes, length = earthquake_len)
+    cursor.execute("SELECT Area = right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1) From earthquake_data")
+    for data in cursor:
+        for value in data:
+            eq_area.append(value)
+    eq_area_list = list(set(eq_area))
+    return render_template('eq_location.html', earthquakes = earthquakes, length = earthquake_len, drop_down = eq_area_list)
 
 
 @app.route('/earthquakeclusters', methods=['GET', 'POST'])
