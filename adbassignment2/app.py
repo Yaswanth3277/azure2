@@ -85,13 +85,145 @@ def range_count():
         print(startmag, stopmag, timing)
 
         if timing == "Recent Week":
-            pass
+            time = '2021-06-05T00:00:00.000Z'
+            cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag > ? and Mag < ? and Time > ?",startmag, stopmag, time)
+            for data in cursor:
+                earthquakes.append(data)
         else:
             cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag > ? and Mag < ?", startmag, stopmag)
             for data in cursor:
                 earthquakes.append(data)
-    return render_template('range_count.html', earthquakes = earthquakes)
+        earthquake_len = len(earthquakes)
+    return render_template('range_count.html', earthquakes = earthquakes, length = earthquake_len)
 
+
+@app.route('/earthquakeclusters', methods=['GET', 'POST'])
+def earthquake_clusters():
+    earthquakes1 = []
+    earthquakes2 = []
+    earthquakes3 = []
+    earthquakes4 = []
+    earthquakes5 = []
+    earthquakes6 = []
+    earthquakes7 = []
+    earthquakes8 = []
+    earthquakes9 = []
+    earthquakes10 = []
+    if request.method == 'POST':
+        clusterby = request.form.get('cluster')
+
+    if clusterby == "Magnitude":
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>'-2.0' and Mag<'-1.0'")
+        for data in cursor:
+            earthquakes1.append(data)
+        earthquake_len1 = len(earthquakes1)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>'-1.0' and Mag<0.0")
+        for data in cursor:
+            earthquakes2.append(data)
+        earthquake_len2 = len(earthquakes2)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>0.0 and Mag<1.0")
+        for data in cursor:
+            earthquakes3.append(data)
+        earthquake_len3 = len(earthquakes3)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>1.0 and Mag<2.0")
+        for data in cursor:
+            earthquakes4.append(data)
+        earthquake_len4 = len(earthquakes4)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>2.0 and Mag<3.0")
+        for data in cursor:
+            earthquakes5.append(data)
+        earthquake_len5 = len(earthquakes5)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>3.0 and Mag<4.0")
+        for data in cursor:
+            earthquakes6.append(data)
+        earthquake_len6 = len(earthquakes6)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>4.0 and Mag<5.0")
+        for data in cursor:
+            earthquakes7.append(data)
+        earthquake_len7 = len(earthquakes7)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>5.0 and Mag<6.0")
+        for data in cursor:
+            earthquakes8.append(data)
+        earthquake_len8 = len(earthquakes8)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>6.0 and Mag<7.0")
+        for data in cursor:
+            earthquakes9.append(data)
+        earthquake_len9 = len(earthquakes9)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Mag>7.0 and Mag<8.0")
+        for data in cursor:
+            earthquakes10.append(data)
+        earthquake_len10 = len(earthquakes10)
+
+        return render_template('mag_clusters.html', earthquakes1 = earthquakes1, length1= earthquake_len1, earthquakes2 = earthquakes2, length2= earthquake_len2, earthquakes3 = earthquakes3, length3= earthquake_len3, earthquakes4 = earthquakes4, length4= earthquake_len4, earthquakes5 = earthquakes5, length5= earthquake_len5, earthquakes6 = earthquakes6, length6= earthquake_len6, earthquakes7 = earthquakes7, length7= earthquake_len7, earthquakes8 = earthquakes8, length8= earthquake_len8, earthquakes9 = earthquakes9, length9= earthquake_len9, earthquakes10 = earthquakes10, length10= earthquake_len10)
+
+    elif clusterby == 'Magnitude Type':
+        types = []
+        cursor.execute("select distinct Magtype from earthquake_data")
+        for data in cursor:
+            types.append(data)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[0])
+        for data in cursor:
+            earthquakes1.append(data)
+        earthquake_len1 = len(earthquakes1)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[1])
+        for data in cursor:
+            earthquakes2.append(data)
+        earthquake_len2 = len(earthquakes2)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[2])
+        for data in cursor:
+            earthquakes3.append(data)
+        earthquake_len3 = len(earthquakes3)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[3])
+        for data in cursor:
+            earthquakes4.append(data)
+        earthquake_len4 = len(earthquakes4)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[4])
+        for data in cursor:
+            earthquakes5.append(data)
+        earthquake_len5 = len(earthquakes5)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[5])
+        for data in cursor:
+            earthquakes6.append(data)
+        earthquake_len6 = len(earthquakes6)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[6])
+        for data in cursor:
+            earthquakes7.append(data)
+        earthquake_len7 = len(earthquakes7)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[7])
+        for data in cursor:
+            earthquakes8.append(data)
+        earthquake_len8 = len(earthquakes8)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[8])
+        for data in cursor:
+            earthquakes9.append(data)
+        earthquake_len9 = len(earthquakes9)
+
+        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[9])
+        for data in cursor:
+            earthquakes10.append(data)
+        earthquake_len10 = len(earthquakes10)
+        return render_template('magtype_cluster.html', earthquakes1 = earthquakes1, length1= earthquake_len1, earthquakes2 = earthquakes2, length2= earthquake_len2, earthquakes3 = earthquakes3, length3= earthquake_len3, earthquakes4 = earthquakes4, length4= earthquake_len4, earthquakes5 = earthquakes5, length5= earthquake_len5, earthquakes6 = earthquakes6, length6= earthquake_len6, earthquakes7 = earthquakes7, length7= earthquake_len7, earthquakes8 = earthquakes8, length8= earthquake_len8, earthquakes9 = earthquakes9, length9= earthquake_len9, earthquakes10 = earthquakes10, length10= earthquake_len10)
+
+
+@app.route('/')
 
 
 if __name__ == '__main__':
