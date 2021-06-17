@@ -115,7 +115,7 @@ def eq_output():
     if request.method == 'POST':
         distance = request.form.get('dist')
         area = request.form.get('areas')
-    cursor.execute("SELECT id ,latitude, longitude, place, Area = right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1) From earthquake_data where right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1)= ? AND SUBSTRING (place,0,PATINDEX('%km%',place)) >=?", area, distance)
+    cursor.execute("SELECT id ,latitude, longitude, place, Area = right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1) From earthquake_data where right(rtrim([place]),charindex(' ',reverse(rtrim([place]))+' ')-1)= ? AND CAST (SUBSTRING (place,0,PATINDEX('%km%',place)) as INT) >=?", area, distance)
     for data in cursor:
         earthquakes.append(data)
     earthquake_len = len(earthquakes)
@@ -200,6 +200,7 @@ def earthquake_clusters():
         cursor.execute("select distinct Magtype from earthquake_data")
         for data in cursor:
             types.append(data)
+        print(types)
 
         cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[0])
         for data in cursor:
@@ -246,11 +247,7 @@ def earthquake_clusters():
             earthquakes9.append(data)
         earthquake_len9 = len(earthquakes9)
 
-        cursor.execute("select Time, Latitude, Longitude, Depth, Mag, Magtype, Place, LocationSource from earthquake_data where Magtype=?",types[9])
-        for data in cursor:
-            earthquakes10.append(data)
-        earthquake_len10 = len(earthquakes10)
-        return render_template('magtype_cluster.html', earthquakes1 = earthquakes1, length1= earthquake_len1, earthquakes2 = earthquakes2, length2= earthquake_len2, earthquakes3 = earthquakes3, length3= earthquake_len3, earthquakes4 = earthquakes4, length4= earthquake_len4, earthquakes5 = earthquakes5, length5= earthquake_len5, earthquakes6 = earthquakes6, length6= earthquake_len6, earthquakes7 = earthquakes7, length7= earthquake_len7, earthquakes8 = earthquakes8, length8= earthquake_len8, earthquakes9 = earthquakes9, length9= earthquake_len9, earthquakes10 = earthquakes10, length10= earthquake_len10)
+        return render_template('magtype_cluster.html', earthquakes1 = earthquakes1, length1= earthquake_len1, earthquakes2 = earthquakes2, length2= earthquake_len2, earthquakes3 = earthquakes3, length3= earthquake_len3, earthquakes4 = earthquakes4, length4= earthquake_len4, earthquakes5 = earthquakes5, length5= earthquake_len5, earthquakes6 = earthquakes6, length6= earthquake_len6, earthquakes7 = earthquakes7, length7= earthquake_len7, earthquakes8 = earthquakes8, length8= earthquake_len8, earthquakes9 = earthquakes9, length9= earthquake_len9)
 
 
 @app.route('/nightquake', methods=['GET', 'POST'])

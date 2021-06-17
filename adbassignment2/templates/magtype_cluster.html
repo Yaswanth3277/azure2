@@ -28,7 +28,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is mlr</h3>
+    <h3>Count of earthquakes where Mag Type is md</h3>
     <h5>{{length1}}</h5>
 </div>
 <div>
@@ -51,7 +51,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is md</h3>
+    <h3>Count of earthquakes where Mag Type is mwr</h3>
     <h5>{{length2}}</h5>
 </div>
 <div>
@@ -74,7 +74,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is mwr</h3>
+    <h3>Count of earthquakes where Mag Type is mb</h3>
     <h5>{{length3}}</h5>
 </div>
 <div>
@@ -97,7 +97,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is mb</h3>
+    <h3>Count of earthquakes where Mag Type is mh</h3>
     <h5>{{length4}}</h5>
 </div>
 <div>
@@ -120,7 +120,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is mh</h3>
+    <h3>Count of earthquakes where Mag Type is mw</h3>
     <h5>{{length5}}</h5>
 </div>
 <div>
@@ -143,7 +143,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is mw</h3>
+    <h3>Count of earthquakes where Mag Type is mb_lg</h3>
     <h5>{{length6}}</h5>
 </div>
 <div>
@@ -166,7 +166,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is mb_lg</h3>
+    <h3>Count of earthquakes where Mag Type is mww</h3>
     <h5>{{length7}}</h5>
 </div>
 <div>
@@ -189,7 +189,7 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is mww</h3>
+    <h3>Count of earthquakes where Mag Type is NA</h3>
     <h5>{{length8}}</h5>
 </div>
 <div>
@@ -212,31 +212,8 @@
         </tr>
         {% endfor %}
     </table>
-    <h3>Count of earthquakes where Mag Type is NA</h3>
-    <h5>{{length9}}</h5>
-</div>
-<div>
-    <table style="border:1px solid black">
-        <tr style="border:1px solid black">
-            <th style="border:1px solid black">Time</th>
-            <th style="border:1px solid black">Latitude</th>
-            <th style="border:1px solid black">Longitude</th>
-            <th style="border:1px solid black">Depth</th>
-            <th style="border:1px solid black">Mag</th>
-            <th style="border:1px solid black">Magtype</th>
-            <th style="border:1px solid black">Place</th>
-            <th style="border:1px solid black">LocationSource</th>
-        </tr>
-        {% for values in earthquakes10 %}
-        <tr style="border:1px solid black">
-            {% for data in values %}
-            <td style="border:1px solid black">{{data}}</td>
-            {% endfor %}
-        </tr>
-        {% endfor %}
-    </table>
     <h3>Count of earthquakes where Mag Type is ml</h3>
-    <h5>{{length10}}</h5>
+    <h5>{{length9}}</h5>
 </div>
 </body>
 </html>
